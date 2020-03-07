@@ -1,5 +1,6 @@
 #!/bin/bash
 # AUR installer
+workdir="`pwd`/`dirname $0`"
 sudo pacman -S git --needed
 git clone https://aur.archlinux.org/yay.git
 cd yay
@@ -16,6 +17,6 @@ fi
 # if root already don't use sudo
 if [ "`whoami`" = "root" ] ; then
 	echo -e "\e[91mWarning: yay and packages from it will not be installed as root!\e[0m"
-	sh -c "cd /home/$USER/linux-gaming; ./arch-gaming.sh"
+	"${workdir}"/arch-gaming.sh
 fi
-${super_user} -H sh -c "cd /home/$USER/linux-gaming; ./arch-gaming.sh"
+${super_user} "${workdir}"/arch-gaming.sh

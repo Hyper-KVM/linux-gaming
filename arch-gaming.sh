@@ -15,6 +15,7 @@ mumble_install="true"
 discord_install="true"
 
 pkg_graphics_install=""
+pkg_optimus_install=""
 pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
 if [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
@@ -33,7 +34,7 @@ if [ -x "$(lspci | grep -i Intel | grep VGA)" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}vulkan-intel lib32-vulkan-intel "
 fi
 if [ -x "$(lspci | grep -i nvidia| grep VGA)" ] || [ -x "$(lspci | grep -i Intel | grep VGA)" ]; then
-	pkg_graphics_install="${pkg_graphics_install}optimus-manager optimus-manager-qt "
+	pkg_optimus_install="${pkg_optimus_install}optimus-manager optimus-manager-qt "
 fi
 # setting additional packages to install
 pkg_additional_install=""
@@ -82,7 +83,12 @@ else
 	echo "installing graphic drivers ${pkg_graphics_install}"
 	pacman -S ${pkg_graphics_install} --needed
 fi
-
+if [ "${pkg_optimus_install}" = "" ] ; then
+	echo "not installing optimus packages"
+else
+	echo "installing optimus packages ${pkg_optimus_install}"
+	yay -S ${pkg_optimus_install} --needed
+fi
 # if wine is installed, remove it to avoid conflict with wine-staging
 if [[ "`pacman -Q wine | wc -l`" = "1" && "`pacman -Q wine | grep wine-staging | wc -l`" = "0" ]] ; then
 	echo "### detected that wine is installed, we need to remove the wine package to install wine-staging"
