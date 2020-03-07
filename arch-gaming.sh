@@ -16,24 +16,24 @@ discord_install="true"
 
 pkg_graphics_install=""
 pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
-if [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
+if [[ "$(lspci | grep -i nvidia | grep VGA | wc -l)" != "0" ]] ; then
 	pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
 		if [ "`cat /etc/os-release | grep 'ID=manjaro' | wc -l`" = "0" ] ; then
 			# manjaro doesn't have the package nvidia-settings
 			pkg_graphics_install="${pkg_graphics_install}nvidia-settings "
 		fi
 fi
-if ! [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
+if [[ "$(lspci | grep -i nvidia | grep VGA | wc -l)" = "0" ]] ; then
 	pkg_graphics_install="${pkg_graphics_install}lib32-mesa vulkan-mesa-layer "
 fi
-if [ -x "$(lspci | grep -i amd | grep VGA)" ] ; then
+if [[ "$(lspci | grep -i amd | grep VGA | wc -l)" != "0" ]] ; then
 	pkg_graphics_install="${pkg_graphics_install}vulkan-radeon lib32-vulkan-radeon "
 fi
-if [ -x "$(lspci | grep -i Intel | grep VGA)" ] ; then
+if [[ "$(lspci | grep -i intel | grep VGA | wc -l)" != "0" ]] ; then
 	pkg_graphics_install="${pkg_graphics_install}vulkan-intel lib32-vulkan-intel "
 fi
 pkg_optimus_install=""
-if [[ "$(lspci | grep -i nvidia| grep VGA | wc -l)" != "0" || "$(lspci | grep -i Intel | grep VGA | wc -l )" != "0" ]]; then
+if [[ "$(lspci | grep -i nvidia| grep VGA | wc -l)" != "0" && "$(lspci | grep -i Intel | grep VGA | wc -l )" != "0" ]]; then
 	pkg_optimus_install="${pkg_optimus_install}optimus-manager optimus-manager-qt "
 fi
 # setting additional packages to install
