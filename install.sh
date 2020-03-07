@@ -16,6 +16,6 @@ fi
 # if root already don't use sudo
 if [ "`whoami`" = "root" ] ; then
 	echo -e "\e[91mWarning: yay and packages from it will not be installed as root!\e[0m"
-	super_user="${super_user}"
+	sh -c "cd /home/$USER/linux-gaming; ./arch-gaming.sh"
 fi
 ${super_user} -H sh -c "cd /home/$USER/linux-gaming; ./arch-gaming.sh"
