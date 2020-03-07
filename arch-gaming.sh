@@ -12,32 +12,30 @@ winetricks_install="true"
 teamspeak_install="true"
 mumble_install="true"
 discord_install="true"
-optimus_manager_install="true"
-optimus_manager_gui_install="true"
 
 # setting graphic drivers to install
 # More Info Driver Installation: https://github.com/lutris/lutris/wiki/Installing-drivers
 pkg_graphics_install=""
-if [[ "${nvidia_install}" = "true" || "${amd_install}" = "true" || "${intel_install}" = "true" ]] ; then
-	pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
-	if [ "${nvidia_install}" = "true" ] ; then
-		pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
+pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
+if [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
+	pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
 		if [ "`cat /etc/os-release | grep 'ID=manjaro' | wc -l`" = "0" ] ; then
 			# manjaro doesn't have the package nvidia-settings
 			pkg_graphics_install="${pkg_graphics_install}nvidia-settings "
 		fi
-	fi
-	if [[ "${amd_install}" = "true" || "${intel_install}" = "true" ]] ; then
-		pkg_graphics_install="${pkg_graphics_install}lib32-mesa vulkan-mesa-layer "
-	fi
-	if [ "${amd_install}" = "true" ] ; then
-		pkg_graphics_install="${pkg_graphics_install}vulkan-radeon lib32-vulkan-radeon "
-	fi
-	if [ "${intel_install}" = "true" ] ; then
-		pkg_graphics_install="${pkg_graphics_install}vulkan-intel lib32-vulkan-intel "
-	fi
 fi
-
+if ! [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
+	pkg_graphics_install="${pkg_graphics_install}lib32-mesa vulkan-mesa-layer "
+fi
+if [ -x "$(lspci | grep -i amd | grep VGA)" ] ; then
+	pkg_graphics_install="${pkg_graphics_install}vulkan-radeon lib32-vulkan-radeon "
+fi
+if [ -x "$(lspci | grep -i Intel | grep VGA)" ] ; then
+	pkg_graphics_install="${pkg_graphics_install}vulkan-intel lib32-vulkan-intel "
+fi
+if [ -x "$(lspci | grep -i nvidia| grep VGA)" ] || [ -x "$(lspci | grep -i Intel | grep VGA)" ]; then
+	pkg_graphics_install="${pkg_graphics_install}optimus-manager optimus-manager-qt "
+fi
 # setting additional packages to install
 pkg_additional_install=""
 if [ "${lutris_install}" = "true" ] ; then
@@ -57,12 +55,6 @@ if [ "${mumble_install}" = "true" ] ; then
 fi
 if [ "${discord_install}" = "true" ] ; then
 	pkg_additional_install="${pkg_additional_install}discord "
-fi
-if [ "${optimus_manager_install}" = "true" ] ; then
-	pkg_additional_install="${pkg_additional_install}optimus-manager "
-fi
-if [ "${optimus_manager_gui_install}" = "true" ] ; then
-	pkg_additional_install="${pkg_additional_install}optimus-manager-qt "
 fi
 
 # btrfs tuning if possible
