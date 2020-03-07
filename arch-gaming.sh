@@ -18,13 +18,13 @@ optimus_manager_gui_install="true"
 
 # autodetect graphic cards
 if [ "${autodetect_graphics}" = "true" ] ; then
-	if [ "`lspci -v | grep -i nvidia | grep VGA`" != "0" ] ; then
+	if [ "`lspci | grep -i nvidia | grep VGA | wc -l`" != "0" ] ; then
 		nvidia_install="true"
 	fi
-	if [ "`lspci -v | grep -i amd | grep VGA`" != "0" ] ; then
+	if [ "`lspci | grep -i amd | grep VGA | wc -l`" != "0" ] ; then
 		amd_install="true"
 	fi
-	if [ "`lspci -v | grep -i intel | grep VGA`" != "0" ] ; then
+	if [ "`lspci | grep -i intel | grep VGA | wc -l`" != "0" ] ; then
 		intel_install="true"
 	fi
 fi
@@ -33,7 +33,6 @@ fi
 # More Info Driver Installation: https://github.com/lutris/lutris/wiki/Installing-drivers
 pkg_graphics_install=""
 if [[ "${nvidia_install}" = "true" || "${amd_install}" = "true" || "${intel_install}" = "true" ]] ; then
-	pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
 	if [ "${nvidia_install}" = "true" ] ; then
 		pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
 		if [ "`cat /etc/os-release | grep 'ID=manjaro' | wc -l`" = "0" ] ; then
