@@ -15,7 +15,6 @@ mumble_install="true"
 discord_install="true"
 
 pkg_graphics_install=""
-pkg_optimus_install=""
 pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
 if [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
@@ -33,7 +32,8 @@ fi
 if [ -x "$(lspci | grep -i Intel | grep VGA)" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}vulkan-intel lib32-vulkan-intel "
 fi
-if [ -x "$(lspci | grep -i nvidia| grep VGA)" ] || [ -x "$(lspci | grep -i Intel | grep VGA)" ]; then
+pkg_optimus_install=""
+if [[ "$(lspci | grep -i nvidia| grep VGA | wc -l)" != "0" || "$(lspci | grep -i Intel | grep VGA | wc -l )" != "0" ]]; then
 	pkg_optimus_install="${pkg_optimus_install}optimus-manager optimus-manager-qt "
 fi
 # setting additional packages to install
