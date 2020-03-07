@@ -14,26 +14,41 @@ teamspeak_install="true"
 mumble_install="true"
 discord_install="true"
 
+# autodetect graphic cards
+if [ "${autodetect_graphics}" = "true" ] ; then
+	if [ "`lspci | grep -i nvidia | grep VGA | wc -l`" != "0" ] ; then
+		nvidia_install="true"
+	fi
+	if [ "`lspci | grep -i amd | grep VGA | wc -l`" != "0" ] ; then
+		amd_install="true"
+	fi
+	if [ "`lspci | grep -i intel | grep VGA | wc -l`" != "0" ] ; then
+		intel_install="true"
+	fi
+fi
+
+# setting graphic drivers to install
+# More Info Driver Installation: https://github.com/lutris/lutris/wiki/Installing-drivers
 pkg_graphics_install=""
-pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
-if [[ "$(lspci | grep -i nvidia | grep VGA | wc -l)" != "0" ]] ; then
+if [ "${nvidia_install}" = "true" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}nvidia nvidia-utils lib32-nvidia-utils lib32-vulkan-driver "
 		if [ "`cat /etc/os-release | grep 'ID=manjaro' | wc -l`" = "0" ] ; then
 			# manjaro doesn't have the package nvidia-settings
 			pkg_graphics_install="${pkg_graphics_install}nvidia-settings "
 		fi
 fi
-if [[ "$(lspci | grep -i nvidia | grep VGA | wc -l)" = "0" ]] ; then
+if [[ "${amd_install}" = "true" || "${intel_install}" = "true" ]] ; then
 	pkg_graphics_install="${pkg_graphics_install}lib32-mesa vulkan-mesa-layer "
 fi
-if [[ "$(lspci | grep -i amd | grep VGA | wc -l)" != "0" ]] ; then
+if [ "${amd_install}" = "true" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}vulkan-radeon lib32-vulkan-radeon "
 fi
-if [[ "$(lspci | grep -i intel | grep VGA | wc -l)" != "0" ]] ; then
+if [ "${intel_install}" = "true" ] ; then
 	pkg_graphics_install="${pkg_graphics_install}vulkan-intel lib32-vulkan-intel "
 fi
+
 pkg_optimus_install=""
-if [[ "$(lspci | grep -i nvidia| grep VGA | wc -l)" != "0" && "$(lspci | grep -i Intel | grep VGA | wc -l )" != "0" ]]; then
+if [[ "${nvidia_install}" = "true" && "${intel_install}" = "true" ]]; then
 	pkg_optimus_install="${pkg_optimus_install}optimus-manager optimus-manager-qt "
 fi
 # setting additional packages to install
@@ -115,5 +130,4 @@ if [ "`cat /etc/os-release | grep 'ID=manjaro' | wc -l`" = "1" ] ; then
         echo "### you should check your manjaro settings -> hardware now. "
 	echo "### if you see old drivers there, you have to remove old drivers/ configurations and then auto install proprietary drivers afterwards"
 fi
-
 
