@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Graphic Driver Install
-nvidia_install="true"
-amd_install="true"
-intel_install="true"
+nvidia_install="false"
+amd_install="false"
+intel_install="false"
+autodetect_graphics="true"
 
 # Gaming Tools Installer
 lutris_install="true"
@@ -13,8 +14,6 @@ teamspeak_install="true"
 mumble_install="true"
 discord_install="true"
 
-# setting graphic drivers to install
-# More Info Driver Installation: https://github.com/lutris/lutris/wiki/Installing-drivers
 pkg_graphics_install=""
 pkg_graphics_install="${pkg_graphics_install}vulkan-icd-loader lib32-vulkan-icd-loader "
 if [ -x "$(lspci | grep -i nvidia | grep VGA)" ] ; then
